@@ -1,0 +1,20 @@
+{
+    "name": "michaeldouglasamarante/ata-system",
+    "description": "This project is a System for managing meetings and creating minutes",
+    "license": "MIT",
+    "minimum-stability": "stable",
+    "authors":[
+        {
+            "name": "Michael Douglas do Amarante",
+            "email": "doug.amarante@gmail.com"
+        }
+    ],
+    "autoload":{
+        "psr-4": {
+            "App\\" : "App/"
+        }
+    },
+    "require": {
+        "wixel/gump": "^1.11"
+    }
+}
