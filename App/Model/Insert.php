@@ -4,7 +4,7 @@
     
     use \GUMP;
     class Insert{
-        
+
         #### Insert::registerUser('user','email@gmail.com','1234');
         public static function registerUser($name,$email,$passwd){
             $rules = [
@@ -33,7 +33,30 @@
             endif;
         }
       
-    }    
+        public static function insertCompany($name,$description){
+            $rules = [
+                'name' => 'required|max_len,100|min_len,2',
+                'description' => 'required|max_len,150|min_len,2'
+            ];
+            $company_date = [
+                'name' => $name,
+                'description' => $description
+            ];
+
+            $is_valid = GUMP::is_valid($company_date,$rules);
+
+            if($is_valid === true):
+                $sql = 'INSERT INTO empresa(nome,descricao) VALUES(?,?)';
+                $insert = Conexao::getConn()->prepare($sql);
+                $insert->bindValue(1,$company_date['name']);
+                $insert->bindValue(2,$company_date['description']);
+
+                $insert->execute();
+            else:
+                print_r($is_valid);
+            endif;    
+        }   
+    } 
     
     
 ?>
