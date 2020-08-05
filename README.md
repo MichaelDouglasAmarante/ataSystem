@@ -1,2 +1,2 @@
-# ataSystem
+# ataSystem | Ainda em desenvolvimento...
 Sistema para gerenciamento de reuniões e ata's.
