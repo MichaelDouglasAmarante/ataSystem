@@ -3,12 +3,12 @@
     require_once './../../vendor/autoload.php';
     
     use \GUMP;
-    ##Insert::registerUser('user','email@gmail.com','1234');
+    ##Insert::insertUser('user','email@gmail.com','1234');
     
     class Insert{
 
         
-        public static function registerUser($name,$email,$passwd){
+        public static function insertUser($name,$email,$passwd){
             $rules = [
                 'name' => 'required|max_len,100|min_len,3',
                 'email' => 'required|max_len,150|valid_email',
@@ -37,7 +37,7 @@
         
         public static function insertCompany($name,$description){
             $rules = [
-                'name' => 'required|max_len,100|min_len,2',
+                'name' => 'required|max_len,50|min_len,2',
                 'description' => 'required|max_len,150|min_len,2'
             ];
             $company_date = [
@@ -87,6 +87,101 @@
         }
         
        
+        public static function insertMeeting($date, $local, $startTime, $endTime, $topic, $status, $idCompany){
+            $rules = [
+                'date' => 'required|date,d/m/Y',
+                'local' => 'required|min_len,2|max_len,20|alpha_numeric',
+                'startTime' => 'required|',
+                'endTime' => 'required|',
+                'topic' => 'required|min_len,2|max_len,20|alpha_numeric',
+                'status' => 'required|min_len,2|max_len,10|Alfa',
+                'idCompany' => 'required|numeric|integer'
+            ];
+
+            $meeting_date = [
+                'date' => $date,
+                'local' => $local,
+                'startTime' => $startTime,
+                'endTime' => $endTime,
+                'topic' => $topic,
+                'status' => $status,
+                'idCompany' => $idCompany 
+            ];
+
+            $is_valid = GUMP::is_valid($meeting_date,$rules);
+
+            if($is_valid === true):
+                $sql = 'INSERT INTO reuniao(data,local,horario_inicio,previsao_termino,pauta,status,id_empresa_fk) VALUES (?,?,?,?,?,?,?)';
+                $insert = Conexao::getConn()->prepare($sql);
+                $insert->bindValue(1,$date);
+                $insert->bindValue(2,$local);
+                $insert->bindValue(3,$startTime);
+                $insert->bindValue(4,$endTime);
+                $insert->bindValue(5,$topic);
+                $insert->bindValue(6,$status);
+                $insert->bindValue(7,$idCompany);
+
+                $insert->execute();
+            else:
+                print_r($is_valid);
+            endif;
+        }
+
+        public static function insertEmployeeMeeting($idEmployee,$idMeeting,$status){
+            $rules = [
+                'idEmployee' => 'required|numeric|integer',
+                'idMeeting' => 'required|numeric|integer',
+                'status' => ''
+            ];
+
+            $EmployeeMeeting_data = [
+                'idEmployee' => $idEmployee,
+                'idMeeting' => $idMeeting,
+                'status' => 'required|min_len,2|max_len,10|Alfa'
+            ];
+
+            $is_valid = GUMP::is_valid($EmployeeMeeting_data, $rules);
+
+            if($is_valid === true):
+                $sql = 'INSERT INTO funcionario_reuniao(id_funcionario_fk, id_reuniao_fk, status) VALUES (?,?,?)';
+                $insert = Conexao::getConn()->prepare($sql);
+                $insert->bindValue(1,$idEmployee);
+                $insert->bindValue(2,$idMeeting);
+                $insert->bindValue(3,$status);
+
+                $insert->execute();
+
+            else:
+                print_r($is_valid);
+            endif;
+        }
+
+        public static function insertAta($text, $idMeeting){
+            $rules = [
+                'text' => 'required|min_len,5|max_len,2000|alpha_numeric',
+                'idMeeting' => 'required|numeric|integer'
+            ];
+
+            $ata_data = [
+                'text' => $text,
+                'idMeeting' => $idMeeting
+            ];
+
+            $is_valid = GUMP::is_valid($ata_data, $rules);
+
+            if($is_valid === true):
+                $sql = 'INSERT INTO ata(texto,id_reuniao_fk) VALUES (?,?)';
+                $insert = Conexao::getConn()->prepare($sql);
+                $insert->bindValue(1,$text);
+                $insert->bindValue(2,$idMeeting);
+
+                $insert->execute();
+
+            else:
+                print_r($is_valid);
+            endif;
+        }
+
     } 
     
     
